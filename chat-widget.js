@@ -1,130 +1,115 @@
-// VistFlow Chat Widget
+// Minimal Dark-Themed VistFlow Chat Widget (Working base)
 (function () {
   if (window.N8nChatWidgetLoaded) return;
   window.N8nChatWidgetLoaded = true;
 
-  const font = document.createElement('link');
-  font.rel = 'stylesheet';
-  font.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap';
-  document.head.appendChild(font);
-
-  const styles = document.createElement('style');
-  styles.textContent = `
-    .chat-assist-widget {
+  const style = document.createElement("style");
+  style.textContent = `
+    .vistflow-widget {
       --primary: #ffffff;
-      --secondary: #cccccc;
-      --bg: #000;
-      --text: #fff;
-      --text-light: #999;
-      --border: #333;
-      --radius: 14px;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      --background: #000000;
+      --text: #ffffff;
       font-family: 'Poppins', sans-serif;
     }
-    .chat-assist-widget,
-    .chat-assist-widget * {
-      box-sizing: border-box;
-    }
-    .chat-window {
+    .vistflow-widget {
       position: fixed;
-      bottom: 90px;
+      bottom: 100px;
       right: 20px;
-      width: 380px;
-      height: 580px;
-      background: var(--bg);
+      width: 360px;
+      height: 520px;
+      background: var(--background);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       color: var(--text);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      display: none;
+      display: flex;
       flex-direction: column;
+      overflow: hidden;
       z-index: 9999;
     }
-    .chat-window.visible {
-      display: flex;
-    }
-    .chat-header {
-      background: var(--bg);
+    .vistflow-widget-header {
+      background: var(--background);
       padding: 16px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .chat-header img {
+    .vistflow-widget-header img {
       width: 32px;
       height: 32px;
       border-radius: 6px;
-      background: #fff;
-      padding: 4px;
     }
-    .chat-header span {
-      font-size: 16px;
+    .vistflow-widget-header span {
       font-weight: 600;
+      font-size: 16px;
     }
-    .chat-body {
+    .vistflow-widget-body {
       flex: 1;
-      padding: 16px;
-      background: #f9fafb;
+      padding: 20px;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      background: #111;
     }
-    .chat-footer {
-      background: var(--bg);
-      padding: 10px;
-      border-top: 1px solid var(--border);
+    .vistflow-widget-footer {
+      padding: 16px;
+      background: var(--background);
+      border-top: 1px solid #333;
       display: flex;
       gap: 10px;
     }
-    .chat-textarea {
+    .vistflow-widget-footer input {
       flex: 1;
-      padding: 10px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: #000;
-      color: #fff;
-      resize: none;
-      font-size: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: #222;
+      color: var(--text);
     }
-    .chat-launcher {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 16px;
+    .vistflow-widget-footer button {
+      padding: 12px;
+      border-radius: 12px;
       background: var(--primary);
       color: #000;
       border: none;
-      border-radius: 30px;
-      box-shadow: var(--shadow);
-      font-weight: 600;
       cursor: pointer;
     }
+    .vistflow-launcher {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
   `;
-  document.head.appendChild(styles);
+  document.head.appendChild(style);
 
-  const widget = document.createElement('div');
-  widget.className = 'chat-assist-widget';
+  const widget = document.createElement("div");
+  widget.className = "vistflow-widget";
+  widget.style.display = "none";
   widget.innerHTML = `
-    <div class="chat-window">
-      <div class="chat-header">
-        <img src="https://vistflow.com/wp-content/uploads/2025/03/VistLogo100-2.png" />
-        <span>VistFlow</span>
-      </div>
-      <div class="chat-body"></div>
-      <div class="chat-footer">
-        <textarea class="chat-textarea" placeholder="Type your message here..."></textarea>
-        <button class="chat-submit">Send</button>
-      </div>
+    <div class="vistflow-widget-header">
+      <img src="https://vistflow.com/wp-content/uploads/2025/03/VistLogo100-2.png" alt="VistFlow" />
+      <span>VistFlow</span>
     </div>
-    <button class="chat-launcher">Need help?</button>
+    <div class="vistflow-widget-body">
+      <p>Welcome to VistFlow – AI-driven automation at your fingertips.</p>
+    </div>
+    <div class="vistflow-widget-footer">
+      <input type="text" placeholder="Type your message..." />
+      <button>&#10148;</button>
+    </div>
   `;
   document.body.appendChild(widget);
 
-  const chatWindow = widget.querySelector('.chat-window');
-  const launcher = widget.querySelector('.chat-launcher');
-
-  launcher.addEventListener('click', () => {
-    chatWindow.classList.toggle('visible');
-  });
+  const launcher = document.createElement("button");
+  launcher.className = "vistflow-launcher";
+  launcher.innerHTML = `Need help?`;
+  launcher.onclick = () => {
+    widget.style.display = widget.style.display === "none" ? "flex" : "none";
+  };
+  document.body.appendChild(launcher);
 })();
