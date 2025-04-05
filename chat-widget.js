@@ -74,7 +74,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: linear-gradient(135deg, var(--chat-color-primary) 0%, var(--chat-color-secondary) 100%);
+            background: #000000 !important;
             color: white;
             position: relative;
         }
@@ -145,8 +145,8 @@
             gap: 10px;
             width: 100%;
             padding: 14px 20px;
-            background: linear-gradient(135deg, var(--chat-color-primary) 0%, var(--chat-color-secondary) 100%);
-            color: white;
+            background: #ffffff !important;
+            color: #000000 !important;
             border: none;
             border-radius: var(--chat-radius-md);
             cursor: pointer;
@@ -159,6 +159,7 @@
         }
 
         .chat-assist-widget .chat-start-btn:hover {
+            background: #e5e5e5 !important;
             transform: translateY(-2px);
             box-shadow: var(--chat-shadow-lg);
         }
@@ -340,8 +341,8 @@
             bottom: 20px;
             height: 56px;
             border-radius: var(--chat-radius-full);
-            background: linear-gradient(135deg, var(--chat-color-primary) 0%, var(--chat-color-secondary) 100%);
-            color: white;
+            background: #ffffff !important;
+            color: #000000 !important;
             border: none;
             cursor: pointer;
             box-shadow: var(--chat-shadow-md);
@@ -362,6 +363,7 @@
         }
 
         .chat-assist-widget .chat-launcher:hover {
+            background: #e5e5e5 !important;
             transform: scale(1.05);
             box-shadow: var(--chat-shadow-lg);
         }
