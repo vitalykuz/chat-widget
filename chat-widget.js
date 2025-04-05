@@ -592,6 +592,9 @@
     widgetRoot.style.setProperty('--chat-widget-tertiary', settings.style.secondaryColor);
     widgetRoot.style.setProperty('--chat-widget-surface', settings.style.backgroundColor);
     widgetRoot.style.setProperty('--chat-widget-text', settings.style.fontColor);
+    widgetRoot.style.setProperty('--chat-widget-light', '#222222');
+    widgetRoot.style.setProperty('--chat-widget-text-light', '#999999');
+    widgetRoot.style.setProperty('--chat-widget-border', '#333333');
 
     // Create chat panel
     const chatWindow = document.createElement('div');
