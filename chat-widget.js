@@ -1,134 +1,136 @@
-// Interactive Chat Widget for n8n
-(function () {
-  if (window.N8nChatWidgetLoaded) return;
-  window.N8nChatWidgetLoaded = true;
+// Chat Widget for n8n with proper right placement and minimal styling
+(function() {
+    if (window.N8nChatWidgetLoaded) return;
+    window.N8nChatWidgetLoaded = true;
 
-  const widgetStyles = document.createElement('style');
-  widgetStyles.textContent = `
-    .chat-widget-container {
-      --primary: #ffffff;
-      --secondary: #cccccc;
-      --background: #000000;
-      --text: #ffffff;
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 380px;
-      height: 580px;
-      background: var(--background);
-      color: var(--text);
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      z-index: 9999;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
+    const font = document.createElement('link');
+    font.rel = 'stylesheet';
+    font.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap';
+    document.head.appendChild(font);
+
+    const style = document.createElement('style');
+    style.textContent = `
+    .chat-widget {
+        --bg: #000;
+        --text: #fff;
+        --input-bg: #111;
+        --btn-bg: #fff;
+        --btn-text: #000;
+        font-family: 'Poppins', sans-serif;
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 360px;
+        height: 540px;
+        background: var(--bg);
+        color: var(--text);
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
     }
 
-    .chat-widget-header {
-      padding: 16px;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .chat-widget.visible { display: flex; }
+
+    .chat-header {
+        background: #000;
+        color: #fff;
+        padding: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    .chat-widget-header h2 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
+    .chat-body {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        background: #111;
     }
 
-    .chat-widget-body {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
+    .chat-footer {
+        padding: 16px;
+        display: flex;
+        gap: 8px;
+        background: #000;
     }
 
-    .chat-widget-footer {
-      display: flex;
-      padding: 12px;
-      border-top: 1px solid #333;
+    .chat-input {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: none;
+        background: var(--input-bg);
+        color: var(--text);
     }
 
-    .chat-widget-footer input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #111;
-      color: #fff;
+    .chat-submit {
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        border: none;
+        border-radius: 8px;
+        padding: 0 16px;
+        cursor: pointer;
     }
 
-    .chat-widget-footer button {
-      margin-left: 8px;
-      background: var(--primary);
-      border: none;
-      color: #000;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
+    .chat-launcher {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 30px;
+        background: var(--btn-bg);
+        color: var(--btn-text);
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        z-index: 999;
     }
+    `;
+    document.head.appendChild(style);
 
-    .chat-widget-launcher {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary);
-      color: #000;
-      padding: 10px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      z-index: 9998;
-    }
-  `;
-  document.head.appendChild(widgetStyles);
+    const widget = document.createElement('div');
+    widget.className = 'chat-widget';
+    widget.innerHTML = `
+        <div class="chat-header">
+            VistFlow <span style="cursor:pointer" id="chat-close">&#10005;</span>
+        </div>
+        <div class="chat-body" id="chat-messages">
+            <div><strong>Welcome!</strong> How can we help you today?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" placeholder="Type a message...">
+            <button class="chat-submit">Send</button>
+        </div>
+    `;
+    document.body.appendChild(widget);
 
-  const widget = document.createElement('div');
-  widget.className = 'chat-widget-container';
-  widget.style.display = 'none';
+    const launcher = document.createElement('div');
+    launcher.className = 'chat-launcher';
+    launcher.textContent = 'Need help?';
+    document.body.appendChild(launcher);
 
-  widget.innerHTML = `
-    <div class="chat-widget-header">
-      <h2>VistFlow</h2>
-      <button id="close-chat" style="background:none;border:none;font-size:18px;color:white;cursor:pointer">×</button>
-    </div>
-    <div class="chat-widget-body" id="chat-body"></div>
-    <div class="chat-widget-footer">
-      <input type="text" placeholder="Type your message..." id="chat-input" />
-      <button id="send-chat">Send</button>
-    </div>
-  `;
-  document.body.appendChild(widget);
+    launcher.addEventListener('click', () => {
+        widget.classList.add('visible');
+    });
 
-  const launcher = document.createElement('div');
-  launcher.className = 'chat-widget-launcher';
-  launcher.textContent = 'Need help?';
-  document.body.appendChild(launcher);
+    widget.querySelector('#chat-close').addEventListener('click', () => {
+        widget.classList.remove('visible');
+    });
 
-  launcher.addEventListener('click', () => {
-    widget.style.display = 'flex';
-    launcher.style.display = 'none';
-  });
-
-  document.getElementById('close-chat').addEventListener('click', () => {
-    widget.style.display = 'none';
-    launcher.style.display = 'block';
-  });
-
-  document.getElementById('send-chat').addEventListener('click', () => {
-    const input = document.getElementById('chat-input');
-    const message = input.value.trim();
-    if (!message) return;
-
-    const bubble = document.createElement('div');
-    bubble.style.margin = '10px 0';
-    bubble.textContent = message;
-    document.getElementById('chat-body').appendChild(bubble);
-
-    input.value = '';
-  });
+    widget.querySelector('.chat-submit').addEventListener('click', () => {
+        const input = widget.querySelector('.chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+        const messages = widget.querySelector('#chat-messages');
+        const bubble = document.createElement('div');
+        bubble.style.margin = '8px 0';
+        bubble.textContent = msg;
+        messages.appendChild(bubble);
+        input.value = '';
+        messages.scrollTop = messages.scrollHeight;
+    });
 })();
